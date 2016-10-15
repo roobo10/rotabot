@@ -74,7 +74,7 @@ class Bot(object):
                     if message['text'].lower() == "yes":
                         self._client.rtm_send_message(message['channel'],"Great!")
                         self.rota_patterns = [[1,1,1,1,1]] * len(self.rota_names)
-                        print(rota_patterns)
+                        logging.debug(rota_patterns)
                         self._client.rtm_send_message("What is %s's work pattern? For each day of the week, starting with Monday write a 1 or a 0.  For example, if %s works every day except Thursday, then write 11101." % (self.rota_names[0]))
                         self._status[message['user']]['status'] = "awaiting pattern 0"
                     else:
