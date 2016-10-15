@@ -16,7 +16,7 @@ import time
 
 class Bot(object):
     def __init__(self):
-        print("GO!")
+        print("Creating BOT!")
         token = None
         try:
             # Raises a KeyError if SLACK_TOKEN environment variable is missing
@@ -25,11 +25,11 @@ class Bot(object):
             # Alternatively, place slack token in the source code
             # API_TOKEN = '###token###'
             print('SLACK_TOKEN missing')
-            sys.exit(1)
         print("Slack Token {}".format(token))
         self._client = SlackClient(token)
 
     def start(self):
+        print("Starting!")
         pp = pprint.PrettyPrinter(indent=4)
         if self._client.rtm_connect():
             while True:
