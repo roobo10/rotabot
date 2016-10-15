@@ -30,6 +30,10 @@ class Bot(object):
     def stop(self):
         self.keep_running = False
 
-logging.debug("Init...")
-bot = Bot()
-bot.start()
+
+if __name__ == "__main__":
+    log_level = os.getenv("LOG_LEVEL", "DEBUG")
+    logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=log_level)
+    logging.debug("Init...")
+    bot = Bot()
+    bot.start()
