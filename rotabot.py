@@ -31,9 +31,9 @@ class Bot(object):
     def start(self):
         pp = pprint.PrettyPrinter(indent=4)
         if self._client.rtm_connect():
-                while True:
-                        pp.pprint( self._client.rtm_read() )
-                        time.sleep(1)
+            while True:
+                pp.pprint( self._client.rtm_read() )
+                time.sleep(1)
         else:
             print("Connection Failed, invalid token?")
         
