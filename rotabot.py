@@ -47,14 +47,14 @@ class Bot(object):
                 if p['status'] == 'awaiting rota type':
                     if message['text'].lower() == "ooh" or message['text'].lower() == "general trim":
                         self._client.rtm_send_message(message['channel'],"Thanks! What day will the rota start on? Please enter it as YYYY/MM/DD.")
-                        self._status[message['user']] = {'status':'awaiting start date'} 
+                        self._status[message['user']]['status'] = 'awaiting start date'
                     else:
                         self._client.rtm_send_message(message['channel'],"Sorry, that's  not a valid date.  Please try again.")
                 elif p['status'] == 'awaiting start date':
                     try:
                         self.start_date = time.strptime(message['text'],"%Y/%m%d")
                         self._client.rtm_send_message(message['channel'],"OK! Can you please enter the last date for the rota in the same format?")
-                        self._status[message['user']] = {'status':'awaiting end date'} 
+                        self._status[message['user']]['status'] = 'awaiting end date'
                     except:
                         self._client.rtm_send_message(message['channel'],"Sorry, that's not a valid date.  Please try again.")
                 elif p['status'] == 'awaiting end date':
@@ -62,19 +62,19 @@ class Bot(object):
                         self.end_date = time.strptime(message['text'],"%Y/%m%d")
                         self._client.rtm_send_message(message['channel'],"That's great!")
                         self._client.rtm_send_message(message['channel'],"Who's on this rota? Please type the names, separated by commas.")
-                        self._status[message['user']] = {'status':'awaiting names'} 
+                        self._status[message['user']]['status'] = 'awaiting names'
                     except:
                         self._client.rtm_send_message(message['channel'],"Sorry, that's not a valid date.  Please try again.")
                 elif p['status'] == 'awaiting names':
                     self.rota_names = [n.strip().title() for n in message['names'].split(',')]
                     self._client.rtm_send_message(message['channel'],"OK! That's %d people.  Is that right? Yes or No" % (len(self.rota_names))
-                    p['status'] == 'awaiting names confirmation':
+                    self._status[message['user']]['status']  = 'awaiting names confirmation'
                 elif p['status'] == 'awaiting names confirmation':
                     if message['text'].lower() == "yes":
                         self._client.rtm_send_message(message['channel'],"Great!")
                     else:
                         self._client.rtm_send_message(message['channel'],"Oops! Let's try those names again. Please type the names, separated by commas.")
-                        p['status'] == 'awaiting names':
+                        self._status[message['user']]['status'] = 'awaiting names'
                 else:
                     self._client.rtm_send_message("Sorry, I don't understand what you're saying! Type 'create rota' to restart.")
 
