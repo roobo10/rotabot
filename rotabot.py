@@ -4,6 +4,7 @@ import os
 from beepboop import resourcer
 from beepboop import bot_manager
 import time
+import datetime
 import logging 
 from rota import Person
 from rota import Rota
@@ -56,14 +57,14 @@ class Bot(object):
                         self._client.rtm_send_message(message['channel'],"Sorry, that's  not a valid date.  Please try again.")
                 elif p['status'] == 'awaiting start date':
                     try:
-                        self.start_date = time.strptime(message['text'],"%Y/%m/%d")
+                        self.start_date = datetime.strptime(message['text'],"%Y/%m/%d")
                         self._client.rtm_send_message(message['channel'],"OK! Can you please enter the last date for the rota in the same format?")
                         self._status[message['user']]['status'] = 'awaiting end date'
                     except:
                         self._client.rtm_send_message(message['channel'],"Sorry, that's not a valid date.  Please try again.")
                 elif p['status'] == 'awaiting end date':
                     try:
-                        self.end_date = time.strptime(message['text'],"%Y/%m/%d")
+                        self.end_date = datetime.strptime(message['text'],"%Y/%m/%d")
                         self._client.rtm_send_message(message['channel'],"That's great!")
                         self._client.rtm_send_message(message['channel'],"Who's on this rota? Please type the names, separated by commas.")
                         self._status[message['user']]['status'] = 'awaiting names'
@@ -119,7 +120,7 @@ class Bot(object):
                         success = True
                     else:
                         try:
-                            days_off = [time.strptime(d.strip(),"%Y/%m/%d") for d in message['text'].split(',')]
+                            days_off = [datetime.strptime(d.strip(),"%Y/%m/%d") for d in message['text'].split(',')]
                             success = True
                         except:
                             self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
