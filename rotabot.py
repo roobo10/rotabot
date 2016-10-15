@@ -4,7 +4,7 @@ import os
 from beepboop import resourcer
 from beepboop import bot_manager
 import time
-import datetime
+from datetime import datetime
 import logging 
 from rota import Person
 from rota import Rota
