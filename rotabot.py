@@ -7,9 +7,11 @@ import time
 import logging 
 
 class Bot(object):
+
     def __init__(self):
         logging.debug("Creating BOT!")
         token = None
+        self._status = []
         self.keep_running = True
         try:
             token = os.environ['SLACK_TOKEN']
@@ -36,9 +38,12 @@ class Bot(object):
     
     def _process_message(self, message):
         if message['type'] == "message":
-            if message['text'] == "hi":
-                self._client.rtm_send_message(message['channel'],"Hello!")
-
+            if "create rota" in message['text'].lower():
+                self._status.setdefault(message['user'],{})
+                self._client.rtm_send_message(message['channel'],"Who is on the rota? Please type the names, separated by commas.")
+                self._status[message['user']].setdefault('status','names') 
+            
+            logging.debug(self._status)
 
 if __name__ == "__main__":
     log_level = os.getenv("LOG_LEVEL", "DEBUG")
