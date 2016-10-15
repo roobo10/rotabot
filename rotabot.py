@@ -11,13 +11,13 @@ from slacker import Slacker
 import os
 from beepboop import resourcer
 from beepboop import bot_manager
-import pprint
 import time
 
 class Bot(object):
     def __init__(self):
         print("Creating BOT!")
         token = None
+        self.keep_running = True
         try:
             # Raises a KeyError if SLACK_TOKEN environment variable is missing
             token = os.environ['SLACK_TOKEN']
@@ -30,16 +30,16 @@ class Bot(object):
 
     def start(self):
         print("Starting!")
-        pp = pprint.PrettyPrinter(indent=4)
+
         if self._client.rtm_connect():
-            while True:
-                pp.pprint( self._client.rtm_read() )
+            while self.keep_running:
+                print( self._client.rtm_read() )
                 time.sleep(1)
         else:
             print("Connection Failed, invalid token?")
         
     def stop(self):
-        self.resource = None
+        self.keep_running = False
         # this is where you'd close your Slack socket connection, and save any context or data
 
 class Rota:
