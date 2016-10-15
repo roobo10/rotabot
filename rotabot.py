@@ -21,11 +21,11 @@ class SampleBot(object):
 
     def start(self, resource):
         self.resource = resource
-        print "Started Bot for ResourceID: {}".format(self.resource['resourceID'])
+        print("Started Bot for ResourceID: {}".format(self.resource['resourceID']))
         # this is where you'd setup your websocket rtm connection to Slack using token
 
     def stop(self, resource):
-        print "Stopped Bot for ResourceID: {}".format(self.resource['resourceID'])
+        print("Stopped Bot for ResourceID: {}".format(self.resource['resourceID']))
         self.resource = None
         # this is where you'd close your Slack socket connection, and save any context or data
 
