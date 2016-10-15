@@ -220,6 +220,8 @@ handler_funcs = dict([
     ('on_message', on_message)
 ])
 
+logging.basicConfig(level=logging.INFO)
+
 slack_token = os.getenv("SLACK_TOKEN", "")
 logging.info("token: {}".format(slack_token))
 
@@ -227,6 +229,3 @@ bp = beepboop.BeepBoop()
 bp.handlers(handler_funcs)
 bp.start()
 
-logging.basicConfig(level=logging.INFO)
-
-persons = [
