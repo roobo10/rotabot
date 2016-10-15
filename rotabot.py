@@ -29,7 +29,8 @@ class Bot(object):
                 logging.info(messages)
                 if len(messages) > 0:
                     for message in messages:
-                        self._process_message(message)
+                        if 'type' in message: 
+                            self._process_message(message)
                 time.sleep(1)
         else:
             logging.critical("Connection Failed, invalid token?")
