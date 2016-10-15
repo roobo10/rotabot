@@ -110,11 +110,11 @@ class Bot(object):
                     t = p['status'].rsplit(' ',1)
                     days_off = []
                     success = False
-                    try:
-                        days_off = [time.strptime(d,"%Y/%m/%d") for d in message['text'].split(',')]
-                        success = True
-                    except:
-                        self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
+                    #try:
+                    days_off = [time.strptime(d,"%Y/%m/%d") for d in message['text'].split(',')]
+                    success = True
+                    #except:
+                    #    self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
                         
                     if success:
                         i = int(t[1])
