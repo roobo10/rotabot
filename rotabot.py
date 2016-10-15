@@ -6,9 +6,9 @@ import logging
 import arrow
 from datetime import date, timedelta as td
 import csv
-import slackclient
-import slacker
-
+from slackclient import SlackClient
+from slacker import Slacker
+import os
 from beepboop import resourcer
 from beepboop import bot_manager
 
@@ -222,10 +222,8 @@ handler_funcs = dict([
 
 logging.basicConfig(level=logging.INFO)
 
-slack_token = os.getenv("SLACK_TOKEN", "")
-logging.info("token: {}".format(slack_token))
+token = os.getenv("SLACK_TOKEN", "")
+logging.info("token: {}".format(token))
 
-bp = beepboop.BeepBoop()
-bp.handlers(handler_funcs)
-bp.start()
-
+#web = Slacker(token)
+#rtm = SlackClient(token)
