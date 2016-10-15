@@ -92,7 +92,7 @@ class Bot(object):
                         for char in message['text']:
                             i = int(char)
                             pattern.append(i)
-                            if i i not in range[1,6]:
+                            if i not in [1,2,3,4,5]:
                                 success = False
                         
                         if success:
