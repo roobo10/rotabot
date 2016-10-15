@@ -5,7 +5,8 @@ from beepboop import resourcer
 from beepboop import bot_manager
 import time
 import logging 
-import rota
+import Person from rota
+import Rota from rota
 
 class Bot(object):
 
