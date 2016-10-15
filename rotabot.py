@@ -111,7 +111,7 @@ class Bot(object):
                     days_off = []
                     success = False
                     #try:
-                    days_off = [time.strptime(d,"%Y/%m/%d") for d in message['text'].split(',')]
+                    days_off = [time.strptime(d.strip(),"%Y/%m/%d") for d in message['text'].split(',')]
                     success = True
                     #except:
                     #    self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
