@@ -28,12 +28,11 @@ class Bot(object):
         print("Slack Token {}".format(token))
         self._client = SlackClient(token)
 
-    def start(self, resource):
+    def start(self):
         self._client.rtm_connect()
         logger.info('connected to slack RTM api')
         
-    def stop(self, resource):
-        print("Stopped Bot for ResourceID: {}".format(self.resource['resourceID']))
+    def stop(self):
         self.resource = None
         # this is where you'd close your Slack socket connection, and save any context or data
 
