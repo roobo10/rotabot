@@ -6,6 +6,11 @@ import logging
 import arrow
 from datetime import date, timedelta as td
 import csv
+import slackclient
+import slacker
+
+from beepboop import resourcer
+from beepboop import bot_manager
 
 class Rota:
     _days = [0,1,2,3,4]
@@ -202,12 +207,26 @@ class Person:
             return True
         return False
 
+# Fires when the connection with the Beep Boop resourcer has opened.
+def on_open(ws):
+    print('connection to Beep Boop server opened')
+
+def on_message(ws, message):
+    # Access the message type (e.g. add_resource, update_resource)
+    print (message['type'])
+
+handler_funcs = dict([
+    ('on_open', on_open),
+    ('on_message', on_message)
+])
+
+slack_token = os.getenv("SLACK_TOKEN", "")
+logging.info("token: {}".format(slack_token))
+
+bp = beepboop.BeepBoop()
+bp.handlers(handler_funcs)
+bp.start()
+
 logging.basicConfig(level=logging.INFO)
 
-persons = []
-
-logging.debug("%d persons added." % len(persons))
-r = Rota("2016/12/05","2017/04/07",persons)
-r.go()
-r.print_rota()
-r.make_csv("test.csv")
+persons = [
