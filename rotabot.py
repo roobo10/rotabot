@@ -53,21 +53,21 @@ class Bot(object):
                         self._client.rtm_send_message(message['channel'],"Sorry, that's  not a valid date.  Please try again.")
                 elif p['status'] == 'awaiting start date':
                     try:
-                        self.start_date = time.strptime(message['text'],"%Y/%m%d")
+                        self.start_date = time.strptime(message['text'],"%Y/%m/%d")
                         self._client.rtm_send_message(message['channel'],"OK! Can you please enter the last date for the rota in the same format?")
                         self._status[message['user']]['status'] = 'awaiting end date'
                     except:
                         self._client.rtm_send_message(message['channel'],"Sorry, that's not a valid date.  Please try again.")
                 elif p['status'] == 'awaiting end date':
                     try:
-                        self.end_date = time.strptime(message['text'],"%Y/%m%d")
+                        self.end_date = time.strptime(message['text'],"%Y/%m/%d")
                         self._client.rtm_send_message(message['channel'],"That's great!")
                         self._client.rtm_send_message(message['channel'],"Who's on this rota? Please type the names, separated by commas.")
                         self._status[message['user']]['status'] = 'awaiting names'
                     except:
                         self._client.rtm_send_message(message['channel'],"Sorry, that's not a valid date.  Please try again.")
                 elif p['status'] == 'awaiting names':
-                    self.rota_names = [n.strip().title() for n in message['names'].split(',')]
+                    self.rota_names = [n.strip().title() for n in message['text'].split(',')]
                     self._client.rtm_send_message(message['channel'],"OK! That's %d people.  Is that right? Yes or No" % (len(self.rota_names)))
                     self._status[message['user']]['status'] = 'awaiting names confirmation'
                 elif p['status'] == 'awaiting names confirmation':
