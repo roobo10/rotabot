@@ -86,7 +86,7 @@ class Bot(object):
                         self._status[message['user']]['status'] = 'awaiting names'
                 elif p['status'][:len('awaiting pattern')] == 'awaiting pattern':
                      t = p['status'].rsplit(' ',1)
-                     if message['text'].isdigit() and len(message['text']) == 5:
+                     if message['text'].isdigit() and len(message['text']) <= 5:
                         success = True
                         pattern = []
                         for char in message['text']:
