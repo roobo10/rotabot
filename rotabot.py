@@ -237,10 +237,6 @@ class Person:
             return True
         return False
 
-def main():
-    print("Main!")
-    bot = Bot()
-    bot.start()
-
-print("Init")
-main()
+print("Main!")
+bot = Bot()
+bot.start()
