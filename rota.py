@@ -3,15 +3,21 @@ import random
 import functools
 from collections import Counter
 import logging
-import arrow
-from datetime import date, timedelta as td
+from datetime import datetime, date, timedelta as td
 import csv
         
 class Rota:
-    _days = [0,1,2,3,4]
+    _days = [1,2,3,4,5]
     _start = 0
     _end = 0
-    _bank_holidays = [arrow.get("2016/12/26"),arrow.get("2016/12/27"),arrow.get("2017/01/02"),arrow.get("2017/01/03"),arrow.get("2017/04/14"),arrow.get("2017/04/17"),arrow.get("2017/05/01"),arrow.get("2017/05/29")]
+    _bank_holidays = [datetime.strptime("2016/12/26","%Y/%m/%d"),
+                        datetime.strptime("2016/12/27","%Y/%m/%d"),
+                        datetime.strptime("2017/01/02","%Y/%m/%d"),
+                        datetime.strptime("2017/01/03","%Y/%m/%d"),
+                        datetime.strptime("2017/04/14","%Y/%m/%d"),
+                        datetime.strptime("2017/04/17","%Y/%m/%d"),
+                        datetime.strptime("2017/05/01","%Y/%m/%d"),
+                        datetime.strptime("2017/05/29","%Y/%m/%d")]
     _persons = []
     _haystack = []
     _rota = []
@@ -24,9 +30,10 @@ class Rota:
         self._end = end_date
         self._persons = persons
         if type == "gentrim" or type == "general trim" :
-            self._days = [0,1,3,4]
+            self._days = [1,2,4,5]
         logging.debug("Rota for %d days." % self._get_days())
 
+    
     def _get_workdays(self):
         workdays = 0
         for person in self._persons:
@@ -38,7 +45,7 @@ class Rota:
         number_days = 0
         for i in range(days.days + 1):
             d = self._start + td(days=i)
-            if d.weekday() in self._days:
+            if d.isoweekday() in self._days:
                 number_days += 1
         return number_days
 
@@ -78,7 +85,7 @@ class Rota:
         days = self._end - self._start
         for i in range(0, days.days+1):
             day = self._start + td(days=i)
-            if day not in self._bank_holidays and day.weekday() in self._days :
+            if day not in self._bank_holidays and day.isoweekday() in self._days :
                 logging.debug ("Doing day %d of %d..." % (i, days.days))
                 selected = False
                 attempt = 0
@@ -99,7 +106,7 @@ class Rota:
                     attempt += 1
                 if not selected:
                     return None
-            elif day.weekday() not in self._days:
+            elif day.isoweekday() not in self._days:
                 rota.append("---------")
             else:
                 rota.append("BANK HOLIDAY")
@@ -121,11 +128,11 @@ class Rota:
                 j = 0
                 for i in range(0, days.days + 1):
                     day = self._start + td(days=i)
-                    if day.weekday() == 4:
+                    if day.isoweekday() == 4:
                         fridays.append(rota[i])
 
                 work_fridays = []
-                for person in persons:
+                for person in self._persons:
                     if 4 in person._days_worked:
                         work_fridays.append(person._name)
 
@@ -143,7 +150,7 @@ class Rota:
                 logging.debug("The most Fridays worked is %d." % max_fridays)
 
                 min_fridays = 1000
-                for person in persons:
+                for person in self._persons:
                     if 4 in person._days_worked:
                         min_fridays = fridays.count(person._name) if fridays.count(person._name) < min_fridays else min_fridays
                 logging.debug("The least Fridays worked is %d." % min_fridays)
@@ -163,13 +170,13 @@ class Rota:
         total_days = self._get_days()
         days = self._end - self._start
         fridays = []
-        print ("|    Day   | %s | %s |" % ("Weekday".ljust(9), "Name".ljust(13)))
+        print ("|    Day   | %s | %s |" % ("isoweekday".ljust(9), "Name".ljust(13)))
         print ("|:--------:|:----------|:--------------|")
         for i in range(0, days.days + 1):
             day = self._start + td(days=i)
-            weekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+            isoweekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
             print("| %s | %s | %s |" % (day.strftime("%d/%m/%y"), day.strftime("%A").ljust(9), self._rota[i].ljust(13)))
-            if day.weekday() == 4:
+            if day.isoweekday() == 4:
                 fridays.append(self._rota[i])
         print()
         print()
@@ -178,13 +185,13 @@ class Rota:
         total_days = self._get_days()
         days = self._end - self._start
         fridays = []
-        md = "|    Day   | %s | %s |\n" % ("Weekday".ljust(9), "Name".ljust(13))
+        md = "|    Day   | %s | %s |\n" % ("isoweekday".ljust(9), "Name".ljust(13))
         md += "|:--------:|:----------|:--------------|\n"
         for i in range(0, days.days + 1):
             day = self._start + td(days=i)
-            weekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+            isoweekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
             md += "| %s | %s | %s |\n" % (day.strftime("%d/%m/%y"), day.strftime("%A").ljust(9), self._rota[i].ljust(13))
-            if day.weekday() == 4:
+            if day.isoweekday() == 4:
                 fridays.append(self._rota[i])
                 
         if show_fridays:
@@ -193,6 +200,7 @@ class Rota:
             
             for p in self._persons:
                 md += "| %s | %s |\n" %(p._name.ljust(13), str(fridays.count(p._name)).ljust(7))
+        return md
 
     def make_csv(self, filename):
         total_days = self._get_days()
@@ -220,7 +228,7 @@ class Person:
         self._days_off = days_off
 
     def can_work(self, day):
-        if day not in self._days_off and day.weekday() in self._days_worked:
+        if day not in self._days_off and day.isoweekday() in self._days_worked:
             return True
         return False
 

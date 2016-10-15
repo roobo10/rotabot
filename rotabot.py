@@ -76,10 +76,10 @@ class Bot(object):
                 elif p['status'] == 'awaiting names confirmation':
                     if message['text'].lower() == "yes":
                         self._client.rtm_send_message(message['channel'],"Great!")
-                        self.rota_patterns = [[1,1,1,1,1]] * len(self.rota_names)
+                        self.rota_patterns = [[1,2,3,4,5]] * len(self.rota_names)
                         self.rota_days_off = [[1,1,1,1,1]] * len(self.rota_names)
                         logging.debug(self.rota_patterns)
-                        self._client.rtm_send_message(message['channel'],"What is %s's work pattern? For each day of the week, starting with Monday write a 1 or a 0.  For example, if %s works every day except Thursday, then write 11101." % (self.rota_names[0],self.rota_names[0]))
+                        self._client.rtm_send_message(message['channel'],"What is %s's work pattern? List the 'weekday numbers' of the days worked with no spaces, where Monday is 1, Tuesday is 2, etc.  For example, if %s works every day except Thursday, then write 1235." % (self.rota_names[0],self.rota_names[0]))
                         self._status[message['user']]['status'] = "awaiting pattern 0"
                     else:
                         self._client.rtm_send_message(message['channel'],"Oops! Let's try those names again. Please type the names, separated by commas.")
