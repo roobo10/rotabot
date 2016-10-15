@@ -12,7 +12,6 @@ import os
 from beepboop import resourcer
 from beepboop import bot_manager
 import pprint
-import thread
 
 
 class Bot(object):
