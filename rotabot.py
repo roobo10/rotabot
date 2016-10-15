@@ -18,7 +18,6 @@ class Bot(object):
     def __init__(self):
         token = os.environ['SLACK_TOKEN']
         print("Slack Token {}".format(token))
-
         self._client = SlackClient(token)
 
     def start(self, resource):
@@ -226,14 +225,6 @@ class Person:
         return False
 
 def main():
-    kw = {
-        'format': '[%(asctime)s] %(message)s',
-        'datefmt': '%m/%d/%Y %H:%M:%S',
-        'level': logging.DEBUG if settings.DEBUG else logging.INFO,
-        'stream': sys.stdout,
-    }
-    logging.basicConfig(**kw)
-    logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.WARNING)
     bot = Bot()
     bot.start()
 
