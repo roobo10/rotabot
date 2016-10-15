@@ -6,12 +6,6 @@ import logging
 import arrow
 from datetime import date, timedelta as td
 import csv
-from slackclient import SlackClient
-from slacker import Slacker
-import os
-from beepboop import resourcer
-from beepboop import bot_manager
-import time
         
 class Rota:
     _days = [0,1,2,3,4]
@@ -25,10 +19,12 @@ class Rota:
 
     _attempts = 1000
 
-    def __init__(self, start_date, end_date, persons):
-        self._start = arrow.get(start_date)
-        self._end = arrow.get(end_date)
+    def __init__(self, start_date, end_date, persons, type="ooh"):
+        self._start = start_date
+        self._end = end_date
         self._persons = persons
+        if type == "gentrim" or type == "general trim" :
+            self._days = [0,1,3,4]
         logging.debug("Rota for %d days." % self._get_days())
 
     def _get_workdays(self):
@@ -177,6 +173,26 @@ class Rota:
                 fridays.append(self._rota[i])
         print()
         print()
+
+    def md_rota(self, show_fridays=False):
+        total_days = self._get_days()
+        days = self._end - self._start
+        fridays = []
+        md = "|    Day   | %s | %s |\n" % ("Weekday".ljust(9), "Name".ljust(13)))
+        md += "|:--------:|:----------|:--------------|\n"
+        for i in range(0, days.days + 1):
+            day = self._start + td(days=i)
+            weekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+            md += "| %s | %s | %s |\n" % (day.strftime("%d/%m/%y"), day.strftime("%A").ljust(9), self._rota[i].ljust(13))
+            if day.weekday() == 4:
+                fridays.append(self._rota[i])
+                
+        if show_fridays:
+            md += "\n| Name          | Fridays |\n"
+            md +=   "|:--------------|:--------|\n"
+            
+            for p in self._persons:
+                md += "| %s | %s |\n" %(p._name.ljust(13), str(fridays.count(p._name)).ljust(7))
 
     def make_csv(self, filename):
         total_days = self._get_days()

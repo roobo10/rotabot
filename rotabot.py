@@ -5,6 +5,7 @@ from beepboop import resourcer
 from beepboop import bot_manager
 import time
 import logging 
+import rota
 
 class Bot(object):
 
@@ -47,6 +48,7 @@ class Bot(object):
                 p = self._status[message['user']]
                 if p['status'] == 'awaiting rota type':
                     if message['text'].lower() == "ooh" or message['text'].lower() == "general trim":
+                        self.type = message['text'].lower() 
                         self._client.rtm_send_message(message['channel'],"Thanks! What day will the rota start on? Please enter it as YYYY/MM/DD.")
                         self._status[message['user']]['status'] = 'awaiting start date'
                     else:
@@ -111,11 +113,15 @@ class Bot(object):
                     t = p['status'].rsplit(' ',1)
                     days_off = []
                     success = False
-                    #try:
-                    days_off = [time.strptime(d.strip(),"%Y/%m/%d") for d in message['text'].split(',')]
-                    success = True
-                    #except:
-                    #    self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
+                    
+                    if message['text'] == "-" or message['text'].lower() == "no" or message['text'].lower() == "none":
+                        success = True
+                    else:
+                        try:
+                            days_off = [time.strptime(d.strip(),"%Y/%m/%d") for d in message['text'].split(',')]
+                            success = True
+                        except:
+                            self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
                         
                     if success:
                         i = int(t[1])
@@ -127,9 +133,16 @@ class Bot(object):
                         else:
                             self._status[message['user']]['status'] = "awaiting generate"
                             self._client.rtm_send_message(message['channel'],"OK! Are you ready to create this rota?")
-
                     logging.info(self.rota_names)
-                    logging.info(self.rota_patterns)
+                    logging.info(self.rota_days_off)
+                elif p['status'] == 'awaiting generate':
+                    if message['text'].lower() == "yes":
+                        persons = []
+                        for i in range(0, len(self.rota_names)):
+                            persons.add(self.rota_names[i], self.rota_patterns[i], self.rota_days_off[i])
+                            r = Rota(self.start_date, self.end_date, persons, self.type)
+                            r.go()
+                            self._client.rtm_send_message(message['channel'],r.md_rota(True))
                 else:
                     self._client.rtm_send_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.")
 
