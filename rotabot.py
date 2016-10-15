@@ -23,7 +23,10 @@ class SampleBot(object):
     def start(self, resource):
         self.resource = resource
         print("Started Bot for ResourceID: {}".format(self.resource['resourceID']))
+        print("Slack Token {}".format(os.environ['SLACK_TOKEN']))
         # this is where you'd setup your websocket rtm connection to Slack using token
+        sc = SlackClient(token)
+
 
     def stop(self, resource):
         print("Stopped Bot for ResourceID: {}".format(self.resource['resourceID']))
