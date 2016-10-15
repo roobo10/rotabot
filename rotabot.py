@@ -13,7 +13,6 @@ from beepboop import resourcer
 from beepboop import bot_manager
 import pprint
 
-
 class Bot(object):
     def __init__(self):
         token = None
@@ -29,8 +28,12 @@ class Bot(object):
         self._client = SlackClient(token)
 
     def start(self):
-        self._client.rtm_connect()
-        logger.info('connected to slack RTM api')
+        if self._client.rtm_connect():
+                while True:
+                        print self._client.rtm_read()
+                        time.sleep(1)
+        else:
+        print "Connection Failed, invalid token?"
         
     def stop(self):
         self.resource = None
