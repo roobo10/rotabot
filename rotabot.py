@@ -7,7 +7,7 @@ import time
 
 class Bot(object):
     def __init__(self):
-        print("Creating BOT!")
+        logging.debug("Creating BOT!")
         token = None
         self.keep_running = True
         try:
@@ -19,16 +19,17 @@ class Bot(object):
         print("Slack Token {}".format(token))
         self._client = SlackClient(token)
     def start(self):
-        print("Starting!")
+        logging.debug("Starting!")
         if self._client.rtm_connect():
             while self.keep_running:
-                print(self._client.rtm_read())
+                logging.info(self._client.rtm_read())
                 time.sleep(1)
         else:
-            print("Connection Failed, invalid token?")
+            logging.critical("Connection Failed, invalid token?")
         
     def stop(self):
         self.keep_running = False
-
+        
+logging.debug("Init...")
 bot = Bot()
 bot.start()
