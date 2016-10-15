@@ -27,10 +27,9 @@ class Bot(object):
                 time.sleep(1)
         else:
             logging.critical("Connection Failed, invalid token?")
-        
     def stop(self):
         self.keep_running = False
-        
+
 logging.debug("Init...")
 bot = Bot()
 bot.start()
