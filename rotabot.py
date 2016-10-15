@@ -222,7 +222,8 @@ handler_funcs = dict([
 
 logging.basicConfig(level=logging.INFO)
 
-token = os.getenv("SLACK_TOKEN", "")
+token = os.environ['SLACK_TOKEN']
+
 logging.info("token: {}".format(token))
 
 #web = Slacker(token)
