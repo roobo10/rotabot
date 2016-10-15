@@ -30,7 +30,7 @@ class Bot(object):
     def start(self):
         if self._client.rtm_connect():
                 while True:
-                        print self._client.rtm_read()
+                        pprint( self._client.rtm_read() )
                         time.sleep(1)
         else:
         print "Connection Failed, invalid token?"
