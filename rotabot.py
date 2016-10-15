@@ -139,7 +139,7 @@ class Bot(object):
                     if message['text'].lower() == "yes":
                         persons = []
                         for i in range(0, len(self.rota_names)):
-                            persons.append(self.rota_names[i], self.rota_patterns[i], self.rota_days_off[i])
+                            persons.append(Person(self.rota_names[i], self.rota_patterns[i], self.rota_days_off[i]))
                             r = Rota(self.start_date, self.end_date, persons, self.type)
                             r.go()
                             self._client.rtm_send_message(message['channel'],r.md_rota(True))
