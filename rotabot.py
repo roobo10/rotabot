@@ -23,12 +23,20 @@ class Bot(object):
         logging.debug("Starting!")
         if self._client.rtm_connect():
             while self.keep_running:
-                logging.info(self._client.rtm_read())
+                message = self._client.rtm_read()
+                logging.info(message)
+                if len(message) > 0:
+                    self._process_message(message)
                 time.sleep(1)
         else:
             logging.critical("Connection Failed, invalid token?")
     def stop(self):
         self.keep_running = False
+    
+    def _process_message(self, message):
+        if message['type'] == "message":
+            if message['text'] == "hi":
+                self._client.rtm_send_message(message['channel'],"Hello!")
 
 
 if __name__ == "__main__":
