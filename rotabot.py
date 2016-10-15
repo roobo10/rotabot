@@ -95,13 +95,40 @@ class Bot(object):
                             i = int(t[1])
                             self.rota_patterns[i] = pattern
                             i+=1
-                            self._status[message['user']]['status'] = "awaiting pattern %d" % i
                             self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
+                            if i < len(self.rota_names):
+                                self._status[message['user']]['status'] = "awaiting pattern %d" % i
+                            else
+                                self._status[message['user']]['status'] = "awaiting leave 0"
+                                self._client.rtm_send_message(message['channel'],"Now let's sort out days off.  Can you list the days %s is off? Please list all the days in the format YYYY/MM/DD, separated by commas." % self.rota_names[0])
                         else:
                             self._client.rtm_send_message(message['channel'],"That wasn't quite right.  Can you try again?")
                         
                         logging.info(self.rota_names)
                         logging.info(self.rota_patterns)
+                elif p['status'][:len('awaiting leave')] == 'awaiting leave':
+                    t = p['status'].rsplit(' ',1)
+                    days_off = []
+                    success = False
+                    try:
+                        days_off = [time.strptime(d.strip(),"%Y/%m/%d") for d in message['text'].spit(',')]
+                        success = True
+                    except:
+                        self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
+                        
+                    if success:
+                        i = int(t[1])
+                        self.rota_days_off[i] = days_off
+                        i+=1
+                        self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
+                        if i < len(self.rota_names):
+                            self._status[message['user']]['status'] = "awaiting leave %d" % i
+                        else
+                            self._status[message['user']]['status'] = "awaiting generate"
+                            self._client.rtm_send_message(message['channel'],"OK! Are you ready to create this rota?")
+
+                    logging.info(self.rota_names)
+                    logging.info(self.rota_patterns)
                 else:
                     self._client.rtm_send_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.")
 
