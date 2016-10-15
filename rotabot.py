@@ -1,11 +1,3 @@
-import math
-import random
-import functools
-from collections import Counter
-import logging
-import arrow
-from datetime import date, timedelta as td
-import csv
 from slackclient import SlackClient
 from slacker import Slacker
 import os
@@ -19,7 +11,6 @@ class Bot(object):
         token = None
         self.keep_running = True
         try:
-            # Raises a KeyError if SLACK_TOKEN environment variable is missing
             token = os.environ['SLACK_TOKEN']
         except:
             # Alternatively, place slack token in the source code
@@ -27,7 +18,6 @@ class Bot(object):
             print('SLACK_TOKEN missing')
         print("Slack Token {}".format(token))
         self._client = SlackClient(token)
-
     def start(self):
         print("Starting!")
         if self._client.rtm_connect():
@@ -40,6 +30,5 @@ class Bot(object):
     def stop(self):
         self.keep_running = False
 
-print("Main!")
 bot = Bot()
 bot.start()
