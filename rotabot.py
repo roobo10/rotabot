@@ -38,12 +38,12 @@ class Bot(object):
         self.keep_running = False
     
     def _process_message(self, message):
-        if message['type'] == "message":
+        if message['type'] == "message" and len(message['text']) > 0:
             if "create rota" in message['text'].lower():
                 self._status[message['user']] = {}
                 self._status[message['user']] = {'status':'awaiting rota type'} 
-                self._client.rtm_send_message(message['channel'],"What kind of rota would you like to make? Please reply with 'OOH' or 'General Trim'.")            
-            if message['user'] in self._status:
+                self._client.rtm_send_message(message['channel'],"What kind of rota would you like to make? Please reply with 'OOH' or 'General Trim'.")
+            elif message['user'] in self._status:
                 p = self._status[message['user']]
                 if p['status'] == 'awaiting rota type':
                     if message['text'].lower() == "ooh" or message['text'].lower() == "general trim":
