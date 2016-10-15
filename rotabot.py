@@ -16,7 +16,15 @@ import pprint
 
 class Bot(object):
     def __init__(self):
-        token = os.environ['SLACK_TOKEN']
+        token = None
+        try:
+            # Raises a KeyError if SLACK_TOKEN environment variable is missing
+            token = os.environ['SLACK_TOKEN']
+        except:
+            # Alternatively, place slack token in the source code
+            # API_TOKEN = '###token###'
+            print 'SLACK_TOKEN missing'
+            sys.exit(1)
         print("Slack Token {}".format(token))
         self._client = SlackClient(token)
 
