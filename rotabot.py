@@ -11,6 +11,7 @@ from slacker import Slacker
 import os
 from beepboop import resourcer
 from beepboop import bot_manager
+import pprint
 
 def spawn_bot():
     return SampleBot()
