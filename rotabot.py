@@ -95,7 +95,7 @@ class Bot(object):
                             i = int(t[1])
                             self.rota_patterns[i] = pattern
                             i+=1
-                            self._status[message['user']]['status'] = "awaiting pattern %d" + i
+                            self._status[message['user']]['status'] = "awaiting pattern %d" % i
                             self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
                         else:
                             self._client.rtm_send_message(message['channel'],"That wasn't quite right.  Can you try again?")
