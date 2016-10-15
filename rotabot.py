@@ -24,15 +24,8 @@ class Bot(object):
 
     def start(self, resource):
         self._client.rtm_connect()
-        thread.start_new_thread(self._keepactive, tuple())
         logger.info('connected to slack RTM api')
-        self._dispatcher.loop()
-
-    def _keepactive(self):
-        logger.info('keep active thread started')
-        while True:
-            time.sleep(30 * 60)
-            self._client.ping()
+        
     def stop(self, resource):
         print("Stopped Bot for ResourceID: {}".format(self.resource['resourceID']))
         self.resource = None
