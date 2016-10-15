@@ -1,4 +1,4 @@
-ROM python:3-slim
+FROM python:3-slim
 ADD . /src
 WORKDIR /src
 RUN pip install -r requirements.txt
