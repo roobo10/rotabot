@@ -238,8 +238,10 @@ class Person:
         return False
 
 def main():
+    print("Main!")
     bot = Bot()
     bot.start()
 
 if __name__ == '__main__':
+    print("Init")
     main()
