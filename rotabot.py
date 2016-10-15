@@ -145,9 +145,9 @@ class Bot(object):
                         logging.info(self.rota_days_off)
                         for i in range(0, len(self.rota_names)):
                             persons.append(Person(self.rota_names[i], self.rota_patterns[i], self.rota_days_off[i]))
-                            r = Rota(self.start_date, self.end_date, persons, self.type)
-                            r.go()
-                            self._client.rtm_send_message(message['channel'],r.md_rota(True))
+                        r = Rota(self.start_date, self.end_date, persons, self.type)
+                        r.go()
+                        self._client.rtm_send_message(message['channel'],r.md_rota(True))
                 else:
                     self._client.rtm_send_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.")
 
