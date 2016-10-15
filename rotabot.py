@@ -23,7 +23,7 @@ class Bot(object):
         except:
             # Alternatively, place slack token in the source code
             # API_TOKEN = '###token###'
-            print 'SLACK_TOKEN missing'
+            print('SLACK_TOKEN missing')
             sys.exit(1)
         print("Slack Token {}".format(token))
         self._client = SlackClient(token)
