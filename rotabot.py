@@ -242,6 +242,5 @@ def main():
     bot = Bot()
     bot.start()
 
-if __name__ == '__main__':
-    print("Init")
-    main()
+print("Init")
+main()
