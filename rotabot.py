@@ -73,9 +73,35 @@ class Bot(object):
                 elif p['status'] == 'awaiting names confirmation':
                     if message['text'].lower() == "yes":
                         self._client.rtm_send_message(message['channel'],"Great!")
+                        self.rota_patterns = [[1,1,1,1,1]] * len(self.rota_names)
+                        print(rota_patterns)
+                        self._client.rtm_send_message("What is %s's work pattern? For each day of the week, starting with Monday write a 1 or a 0.  For example, if %s works every day except Thursday, then write 11101." % (self.rota_names[0]))
+                        self._status[message['user']]['status'] = "awaiting pattern 0"
                     else:
                         self._client.rtm_send_message(message['channel'],"Oops! Let's try those names again. Please type the names, separated by commas.")
                         self._status[message['user']]['status'] = 'awaiting names'
+                elif p['status'][:len('awaiting pattern')] == 'awaiting pattern':
+                     t = p['status'].rsplit(' ',1)
+                     if message['text'].isdigit() and len(message['text']) == 5:
+                        success = True
+                        pattern = []
+                        for char in message['text']:
+                            i = int(char)
+                            pattern.append(i)
+                            if i != 0 and i != 1:
+                                success = False
+                        
+                        if success:
+                            i = int(t[1])
+                            self.rota_patterns[i] = pattern
+                            i+=1
+                            self._status[message['user']]['status'] = "awaiting pattern %d" + i
+                            self._client.rtm_send_message("Thanks.  Now for %s." % (self.rota_names[i]))
+                        else:
+                            self._client.rtm_send_message("That wasn't quite right.  Can you try again?")
+                        
+                        logging.info(self.rota_names)
+                        logging.info(self.rota_patterns)
                 else:
                     self._client.rtm_send_message("Sorry, I don't understand what you're saying! Type 'create rota' to restart.")
 
