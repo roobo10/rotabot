@@ -16,6 +16,7 @@ import time
 
 class Bot(object):
     def __init__(self):
+        print("GO!")
         token = None
         try:
             # Raises a KeyError if SLACK_TOKEN environment variable is missing
