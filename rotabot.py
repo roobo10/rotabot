@@ -95,9 +95,9 @@ class Bot(object):
                             i = int(t[1])
                             self.rota_patterns[i] = pattern
                             i+=1
-                            self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
                             if i < len(self.rota_names):
                                 self._status[message['user']]['status'] = "awaiting pattern %d" % i
+                                self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
                             else:
                                 self._status[message['user']]['status'] = "awaiting leave 0"
                                 self._client.rtm_send_message(message['channel'],"Now let's sort out days off.  Can you list the days %s is off? Please list all the days in the format YYYY/MM/DD, separated by commas." % self.rota_names[0])
@@ -120,8 +120,8 @@ class Bot(object):
                         i = int(t[1])
                         self.rota_days_off[i] = days_off
                         i+=1
-                        self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
                         if i < len(self.rota_names):
+                            self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
                             self._status[message['user']]['status'] = "awaiting leave %d" % i
                         else:
                             self._status[message['user']]['status'] = "awaiting generate"
