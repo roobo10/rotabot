@@ -68,7 +68,7 @@ class Bot(object):
                 elif p['status'] == 'awaiting names':
                     self.rota_names = [n.strip().title() for n in message['names'].split(',')]
                     self._client.rtm_send_message(message['channel'],"OK! That's %d people.  Is that right? Yes or No" % (len(self.rota_names))
-                    self._status[message['user']]['status']  = 'awaiting names confirmation'
+                    self._status[message['user']]['status'] = 'awaiting names confirmation'
                 elif p['status'] == 'awaiting names confirmation':
                     if message['text'].lower() == "yes":
                         self._client.rtm_send_message(message['channel'],"Great!")
