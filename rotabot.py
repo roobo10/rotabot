@@ -5,7 +5,7 @@ from beepboop import resourcer
 from beepboop import bot_manager
 import time
 from datetime import datetime
-import logging 
+import logging
 from rota import Person
 from rota import Rota
 
@@ -32,25 +32,25 @@ class Bot(object):
                 logging.info(messages)
                 if len(messages) > 0:
                     for message in messages:
-                        if 'type' in message: 
+                        if 'type' in message:
                             self._process_message(message)
                 time.sleep(1)
         else:
             logging.critical("Connection Failed, invalid token?")
     def stop(self):
         self.keep_running = False
-    
+
     def _process_message(self, message):
         if message['type'] == "message" and len(message['text']) > 0:
             if "create rota" in message['text'].lower():
                 self._status[message['user']] = {}
-                self._status[message['user']] = {'status':'awaiting rota type'} 
+                self._status[message['user']] = {'status':'awaiting rota type'}
                 self._client.rtm_send_message(message['channel'],"What kind of rota would you like to make? Please reply with 'OOH' or 'General Trim'.")
             elif message['user'] in self._status:
                 p = self._status[message['user']]
                 if p['status'] == 'awaiting rota type':
                     if message['text'].lower() == "ooh" or message['text'].lower() == "general trim":
-                        self.type = message['text'].lower() 
+                        self.type = message['text'].lower()
                         self._client.rtm_send_message(message['channel'],"Thanks! What day will the rota start on? Please enter it as YYYY/MM/DD.")
                         self._status[message['user']]['status'] = 'awaiting start date'
                     else:
@@ -95,7 +95,7 @@ class Bot(object):
                             pattern.append(i)
                             if i not in [1,2,3,4,5]:
                                 success = False
-                        
+
                         if success:
                             i = int(t[1])
                             self.rota_patterns[i] = pattern
@@ -108,14 +108,14 @@ class Bot(object):
                                 self._client.rtm_send_message(message['channel'],"Now let's sort out days off.  Can you list the days %s is off? Please list all the days in the format YYYY/MM/DD, separated by commas." % self.rota_names[0])
                         else:
                             self._client.rtm_send_message(message['channel'],"That wasn't quite right.  Can you try again?")
-                        
+
                         logging.info(self.rota_names)
                         logging.info(self.rota_patterns)
                 elif p['status'][:len('awaiting leave')] == 'awaiting leave':
                     t = p['status'].rsplit(' ',1)
                     days_off = []
                     success = False
-                    
+
                     if message['text'] == "-" or message['text'].lower() == "no" or message['text'].lower() == "none":
                         success = True
                     else:
@@ -124,7 +124,7 @@ class Bot(object):
                             success = True
                         except:
                             self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
-                        
+
                     if success:
                         i = int(t[1])
                         self.rota_days_off[i] = days_off
@@ -140,6 +140,9 @@ class Bot(object):
                 elif p['status'] == 'awaiting generate':
                     if message['text'].lower() == "yes":
                         persons = []
+                        logging.info(self.rota_names)
+                        logging.info(self.rota_patterns)
+                        logging.info(self.rota_days_off)
                         for i in range(0, len(self.rota_names)):
                             persons.append(Person(self.rota_names[i], self.rota_patterns[i], self.rota_days_off[i]))
                             r = Rota(self.start_date, self.end_date, persons, self.type)
@@ -149,7 +152,7 @@ class Bot(object):
                     self._client.rtm_send_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.")
 
 if __name__ == "__main__":
-    log_level = os.getenv("LOG_LEVEL", "DEBUG")
+    log_level = os.getenv("LOG_LEVEL", "INFO")
     logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=log_level)
     logging.debug("Init...")
     bot = Bot()
