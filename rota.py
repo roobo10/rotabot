@@ -5,7 +5,8 @@ from collections import Counter
 import logging
 from datetime import datetime, date, timedelta as td
 import csv
-        
+import io
+
 class Rota:
     _days = [1,2,3,4,5]
     _start = 0
@@ -170,7 +171,7 @@ class Rota:
         total_days = self._get_days()
         days = self._end - self._start
         fridays = []
-        print ("|    Day   | %s | %s |" % ("isoweekday".ljust(9), "Name".ljust(13)))
+        print ("|    Day   | %s | %s |" % ("Weekday".ljust(9), "Name".ljust(13)))
         print ("|:--------:|:----------|:--------------|")
         for i in range(0, days.days + 1):
             day = self._start + td(days=i)
@@ -202,12 +203,12 @@ class Rota:
                 md += "| %s | %s |\n" %(p._name.ljust(13), str(fridays.count(p._name)).ljust(7))
         return md
 
-    def make_csv(self, filename):
+    def rota_csv(self):
         total_days = self._get_days()
         days = self._end - self._start
-        ofile  = open(filename, "w",newline="")
+        csv_output  = io.StringIO()
         fieldnames=['Subject','Start Date','All Day Event']
-        writer = csv.DictWriter(ofile, fieldnames=fieldnames)
+        writer = csv.DictWriter(csv_output, fieldnames=fieldnames)
         writer.writeheader()
 
         for i in range(0, days.days + 1):
@@ -215,7 +216,7 @@ class Rota:
             if self._rota[i] != "---------" and self._rota[i] != "BANK HOLIDAY":
                 writer.writerow({'Subject':self._rota[i], 'Start Date':day.strftime("%Y/%m/%d"),'All Day Event':'True'})
 
-        ofile.close()
+        return csv_output.getvalue()
 
 class Person:
     _name = ""

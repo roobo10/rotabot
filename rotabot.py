@@ -154,12 +154,26 @@ class Bot(object):
                         r.go()
                         rota_md = r.md_rota(True)
                         rota_md_lines = rota_md.split("\n") 
-                        n = 7
+                        n = 21
                         rota_md_group = [rota_md_lines[m:m+n] for m in range(0, len(rota_md_lines), n)]
-                        for line_md in rota_md_group:
-                            self._slack.chat.post_message(message['channel'],"```%s```" % ("\n".join(line_md)), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         r_title = "Rota for %s to %s" % (self.start_date.strftime("%d/%m/%Y"),self.end_date.strftime("%d/%m/%Y"))
-                        self._slack.chat.post_message(message['channel'],"Here's the rota!\n```" + rota_md + "```", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._slack.chat.post_message(message['channel'],"Here's the rota!\n*" + r_title + "*", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        for line_md in rota_md_group:
+                            if len(line_md) > 0:
+                                self._slack.chat.post_message(message['channel'],"```%s```" % ("\n".join(line_md)), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._slack.chat.post_message(message['channel'],"Does the rota look good?  If you type `YES`, I can upload a file you can import straight into *Google Calendar*.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._status[message['user']]['status'] = "awaiting upload confirmation"
+                        self._status[message['user']]['last_rota'] = r
+                elif p['status'] == 'awaiting upload confirmation':
+                    if message['text'].lower() == "yes" and 'last_rota' in self._status[message['user']]:
+                        r = self._status[message['user']]['last_rota'] 
+                        self._slack.api.post('files.upload',
+                             data={
+                                 'content': r.rota_csv(),
+                                 'filetype': "csv",
+                                 'filename': "Rota %s-%s.csv" % (self.start_date.strftime("%b%y"),self.end_date.strftime("%b%y")),
+                                 'title': "Rota %s – %s" % (self.start_date.strftime("%b %y"),self.end_date.strftime("%b %y"))
+                             })                
                 else:
                     self._slack.chat.post_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
 
