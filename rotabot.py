@@ -154,7 +154,8 @@ class Bot(object):
                         rota_md = r.md_rota(True)
                         r_title = "Rota for %s to %s" % (self.start_date.strftime("%d/%m/%Y"),self.end_date.strftime("%d/%m/%Y"))
                         attach = {'color':'good','title': r_title,'text':'```' + rota_md + '```'}
-                        self._slack.chat.post_message(message['channel'],"OK! We're done.  Here's the rota.",attachments=attach, username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._slack.chat.post_message(message['channel'],attachments=attach, username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._slack.chat.post_message(message['channel'],"Here's the rota!\n```" + rota_md + "```")
                 else:
                     self._slack.chat.post_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
 
