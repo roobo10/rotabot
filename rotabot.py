@@ -24,6 +24,10 @@ class Bot(object):
             print('SLACK_TOKEN missing')
         print("Slack Token {}".format(token))
         self._client = SlackClient(token)
+        self._slack = Slacker(token)
+        self.username = "Rotabot"
+        self.icon_emoji = ":robot_face:"
+        
     def start(self):
         logging.debug("Starting!")
         if self._client.rtm_connect():
@@ -45,7 +49,7 @@ class Bot(object):
             if "create rota" in message['text'].lower():
                 self._status[message['user']] = {}
                 self._status[message['user']] = {'status':'awaiting rota type'}
-                self._client.rtm_send_message(message['channel'],"What kind of rota would you like to make? Please reply with 'OOH' or 'General Trim'.")
+                self._slack.slack.chat.post_message(message['channel'],"What kind of rota would you like to make? Please reply with **'OOH'** or '***General Trim***'.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
             elif message['user'] in self._status:
                 p = self._status[message['user']]
                 if p['status'] == 'awaiting rota type':
