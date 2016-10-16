@@ -154,7 +154,7 @@ class Bot(object):
                         r.go()
                         rota_md = r.md_rota(True)
                         rota_md_lines = rota_md.split("\n") 
-                        n = 21
+                        n = 28
                         rota_md_group = [rota_md_lines[m:m+n] for m in range(0, len(rota_md_lines), n)]
                         r_title = "Rota for %s to %s" % (self.start_date.strftime("%d/%m/%Y"),self.end_date.strftime("%d/%m/%Y"))
                         self._slack.chat.post_message(message['channel'],"Here's the rota!\n*" + r_title + "*", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
@@ -172,7 +172,8 @@ class Bot(object):
                                  'content': r.rota_csv(),
                                  'filetype': "csv",
                                  'filename': "Rota %s-%s.csv" % (self.start_date.strftime("%b%y"),self.end_date.strftime("%b%y")),
-                                 'title': "Rota %s – %s" % (self.start_date.strftime("%b %y"),self.end_date.strftime("%b %y"))
+                                 'title': "Rota %s – %s" % (self.start_date.strftime("%b %y"),self.end_date.strftime("%b %y")),
+                                 'channels': message['channel']
                              })                
                 else:
                     self._slack.chat.post_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
