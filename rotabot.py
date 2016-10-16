@@ -39,9 +39,8 @@ class Bot(object):
                     for message in messages:
                         if 'type' in message and 'user' in message:
                             if 'channel' in message:
-                                channel = self._slack.channels.info(message['channel'])
-                                logging.info(channel)
-                            self._process_message(message)
+                                if (message['channel'] in self._slack.mpim.list()):
+                                    self._process_message(message)
                 time.sleep(1)
         else:
             logging.critical("Connection Failed, invalid token?")
