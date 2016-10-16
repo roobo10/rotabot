@@ -188,7 +188,7 @@ class Rota:
         total_days = self._get_days()
         days = self._end - self._start
         fridays = []
-        md = "|    Day   | %s | %s |\n" % ("isoweekday".ljust(9), "Name".ljust(13))
+        md = "|    Day   | %s | %s |\n" % ("Weekday".ljust(9), "Name".ljust(13))
         md += "|:--------:|:----------|:--------------|\n"
         for i in range(0, days.days + 1):
             day = self._start + td(days=i)

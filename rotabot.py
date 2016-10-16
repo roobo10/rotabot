@@ -166,15 +166,23 @@ class Bot(object):
                         self._status[message['user']]['last_rota'] = r
                 elif p['status'] == 'awaiting upload confirmation':
                     if message['text'].lower() == "yes" and 'last_rota' in self._status[message['user']]:
-                        r = self._status[message['user']]['last_rota'] 
+                        r = self._status[message['user']]['last_rota']
+
+                        type = r._type if r._type == "ooh" else "gt"
+                        type = type.upper()
+                        full_type = type if type == "OOH" else "Gen Trim"
+                        
                         self._slack.api.post('files.upload',
                              data={
                                  'content': r.rota_csv(),
                                  'filetype': "csv",
-                                 'filename': "Rota %s-%s.csv" % (self.start_date.strftime("%b%y"),self.end_date.strftime("%b%y")),
-                                 'title': "Rota %s – %s" % (self.start_date.strftime("%b %y"),self.end_date.strftime("%b %y")),
+                                 'filename': "%s Rota %s-%s.csv" % (type, self.start_date.strftime("%b%y"),self.end_date.strftime("%b%y")),
+                                 'title': "%s Rota %s – %s" % (full_type, self.start_date.strftime("%b %y"),self.end_date.strftime("%b %y")),
                                  'channels': message['channel']
                              })                
+                        self._slack.chat.post_message(message['channel'],"All done :thumbsup:", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._slack.chat.post_message(message['channel'],"Thanks!", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._status[message['user']]['status'] = "rota done"
                 else:
                     self._slack.chat.post_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
 
