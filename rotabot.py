@@ -81,7 +81,7 @@ class Bot(object):
                     self._status[message['user']]['status'] = 'awaiting names confirmation'
                 elif p['status'] == 'awaiting names confirmation':
                     if message['text'].lower() == "yes":
-                        self._client.rtm_send_message(message['channel'],"Great!", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._slack.chat.post_message(message['channel'],"Great!", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self.rota_patterns = [[1,2,3,4,5]] * len(self.rota_names)
                         self.rota_days_off = [[1,1,1,1,1]] * len(self.rota_names)
                         logging.debug(self.rota_patterns)
