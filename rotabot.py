@@ -38,8 +38,9 @@ class Bot(object):
                 if len(messages) > 0:
                     for message in messages:
                         if 'type' in message and 'user' in message:
-                            channel = self._slack.channels.info(message['channel'])
-                            logging.info(channel)
+                            if 'channel' in message:
+                                channel = self._slack.channels.info(message['channel'])
+                                logging.info(channel)
                             self._process_message(message)
                 time.sleep(1)
         else:
