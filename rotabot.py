@@ -49,7 +49,7 @@ class Bot(object):
             if "create rota" in message['text'].lower():
                 self._status[message['user']] = {}
                 self._status[message['user']] = {'status':'awaiting rota type'}
-                self._slack.chat.post_message(message['channel'],"What kind of **rota** would you like to make? Please reply with `OOH` or `General Trim`.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                self._slack.chat.post_message(message['channel'],"What kind of *rota* would you like to make? Please reply with `OOH` or `General Trim`.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
             elif message['user'] in self._status:
                 p = self._status[message['user']]
                 if p['status'] == 'awaiting rota type':
@@ -76,7 +76,7 @@ class Bot(object):
                         self._slack.chat.post_message(message['channel'],"Sorry, that's not a valid date.  Please try again.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                 elif p['status'] == 'awaiting names':
                     self.rota_names = [n.strip().title() for n in message['text'].split(',')]
-                    self._slack.chat.post_message(message['channel'],"OK! That's **%d** people.  Is that right? `YES` or `NO`" % (len(self.rota_names)), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                    self._slack.chat.post_message(message['channel'],"OK! That's *%d* people.  Is that right? `YES` or `NO`" % (len(self.rota_names)), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                     self._status[message['user']]['status'] = 'awaiting names confirmation'
                 elif p['status'] == 'awaiting names confirmation':
                     if message['text'].lower() == "yes":
