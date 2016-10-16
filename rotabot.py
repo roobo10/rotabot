@@ -49,13 +49,13 @@ class Bot(object):
             if "create rota" in message['text'].lower():
                 self._status[message['user']] = {}
                 self._status[message['user']] = {'status':'awaiting rota type'}
-                self._slack.slack.chat.post_message(message['channel'],"What kind of rota would you like to make? Please reply with **'OOH'** or '***General Trim***'.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                self._slack.chat.post_message(message['channel'],"What kind of rota would you like to make? Please reply with **'OOH'** or '***General Trim***'.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
             elif message['user'] in self._status:
                 p = self._status[message['user']]
                 if p['status'] == 'awaiting rota type':
                     if message['text'].lower() == "ooh" or message['text'].lower() == "general trim":
                         self.type = message['text'].lower()
-                        self._slack.slack.chat.post_message(message['channel'],"Thanks! What day will the rota start on? Please enter it as `YYYY/MM/DD`.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._slack.chat.post_message(message['channel'],"Thanks! What day will the rota start on? Please enter it as `YYYY/MM/DD`.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self._status[message['user']]['status'] = 'awaiting start date'
                     else:
                         self._client.rtm_send_message(message['channel'],"Sorry, that's  not a valid date.  Please try again.")
