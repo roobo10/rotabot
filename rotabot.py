@@ -49,7 +49,7 @@ class Bot(object):
             if "create rota" in message['text'].lower():
                 self._status[message['user']] = {}
                 self._status[message['user']] = {'status':'awaiting rota type'}
-                self._slack.chat.post_message(message['channel'],"What kind of rota would you like to make? Please reply with **'OOH'** or '***General Trim***'.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                self._slack.chat.post_message(message['channel'],"What kind of **rota** would you like to make? Please reply with `OOH` or `General Trim`.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
             elif message['user'] in self._status:
                 p = self._status[message['user']]
                 if p['status'] == 'awaiting rota type':
@@ -58,25 +58,25 @@ class Bot(object):
                         self._slack.chat.post_message(message['channel'],"Thanks! What day will the rota start on? Please enter it as `YYYY/MM/DD`.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self._status[message['user']]['status'] = 'awaiting start date'
                     else:
-                        self._client.rtm_send_message(message['channel'],"Sorry, that's  not a valid date.  Please try again.")
+                        self._slack.chat.post_message(message['channel'],"Sorry, that's  not a valid date.  Please try again.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                 elif p['status'] == 'awaiting start date':
                     try:
                         self.start_date = datetime.strptime(message['text'],"%Y/%m/%d")
-                        self._client.rtm_send_message(message['channel'],"OK! Can you please enter the last date for the rota in the same format?")
+                        self._slack.chat.post_message(message['channel'],"OK! Can you please enter the last date for the rota in the same format?", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self._status[message['user']]['status'] = 'awaiting end date'
                     except:
-                        self._client.rtm_send_message(message['channel'],"Sorry, that's not a valid date.  Please try again.")
+                        self._slack.chat.post_message(message['channel'],"Sorry, that's not a valid date.  Please try again.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                 elif p['status'] == 'awaiting end date':
                     try:
                         self.end_date = datetime.strptime(message['text'],"%Y/%m/%d")
-                        self._client.rtm_send_message(message['channel'],"That's great!")
-                        self._client.rtm_send_message(message['channel'],"Who's on this rota? Please type the names, separated by commas.")
+                        self._slack.chat.post_message(message['channel'],"That's great!", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                        self._slack.chat.post_message(message['channel'],"Who's on this rota? Please type the names, separated by commas.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self._status[message['user']]['status'] = 'awaiting names'
                     except:
-                        self._client.rtm_send_message(message['channel'],"Sorry, that's not a valid date.  Please try again.")
+                        self._slack.chat.post_message(message['channel'],"Sorry, that's not a valid date.  Please try again.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                 elif p['status'] == 'awaiting names':
                     self.rota_names = [n.strip().title() for n in message['text'].split(',')]
-                    self._client.rtm_send_message(message['channel'],"OK! That's %d people.  Is that right? Yes or No" % (len(self.rota_names)))
+                    self._slack.chat.post_message(message['channel'],"OK! That's **%d** people.  Is that right? `YES` or `NO`" % (len(self.rota_names)), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                     self._status[message['user']]['status'] = 'awaiting names confirmation'
                 elif p['status'] == 'awaiting names confirmation':
                     if message['text'].lower() == "yes":
@@ -84,10 +84,10 @@ class Bot(object):
                         self.rota_patterns = [[1,2,3,4,5]] * len(self.rota_names)
                         self.rota_days_off = [[1,1,1,1,1]] * len(self.rota_names)
                         logging.debug(self.rota_patterns)
-                        self._client.rtm_send_message(message['channel'],"What is %s's work pattern? List the 'weekday numbers' of the days worked with no spaces, where Monday is 1, Tuesday is 2, etc.  For example, if %s works every day except Thursday, then write 1235." % (self.rota_names[0],self.rota_names[0]))
+                        self._slack.chat.post_message(message['channel'],"What is %s's work pattern? List the 'weekday numbers' of the days worked with no spaces, where Monday is 1, Tuesday is 2, etc.  For example, if %s works every day except Thursday, then write `1235`." % (self.rota_names[0],self.rota_names[0]), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self._status[message['user']]['status'] = "awaiting pattern 0"
                     else:
-                        self._client.rtm_send_message(message['channel'],"Oops! Let's try those names again. Please type the names, separated by commas.")
+                        self._slack.chat.post_message(message['channel'],"Oops! Let's try those names again. Please type the names, separated by commas.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self._status[message['user']]['status'] = 'awaiting names'
                 elif p['status'][:len('awaiting pattern')] == 'awaiting pattern':
                      t = p['status'].rsplit(' ',1)
@@ -106,12 +106,12 @@ class Bot(object):
                             i+=1
                             if i < len(self.rota_names):
                                 self._status[message['user']]['status'] = "awaiting pattern %d" % i
-                                self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
+                                self._slack.chat.post_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                             else:
                                 self._status[message['user']]['status'] = "awaiting leave 0"
-                                self._client.rtm_send_message(message['channel'],"Now let's sort out days off.  Can you list the days %s is off? Please list all the days in the format YYYY/MM/DD, separated by commas." % self.rota_names[0])
+                                self._slack.chat.post_message(message['channel'],"Now let's sort out days off.  Can you list the days %s is off? Please list all the days in the format `YYYY/MM/DD`, separated by commas." % self.rota_names[0], username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         else:
-                            self._client.rtm_send_message(message['channel'],"That wasn't quite right.  Can you try again?")
+                            self._slack.chat.post_message(message['channel'],"That wasn't quite right.  Can you try again?", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
 
                         logging.info(self.rota_names)
                         logging.info(self.rota_patterns)
@@ -127,18 +127,18 @@ class Bot(object):
                             days_off = [datetime.strptime(d.strip(),"%Y/%m/%d") for d in message['text'].split(',')]
                             success = True
                         except:
-                            self._client.rtm_send_message(message['channel'],"That didn't work.  Can you try again?")
+                            self._slack.chat.post_message(message['channel'],"That didn't work.  Can you try again?", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
 
                     if success:
                         i = int(t[1])
                         self.rota_days_off[i] = days_off
                         i+=1
                         if i < len(self.rota_names):
-                            self._client.rtm_send_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]))
+                            self._slack.chat.post_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                             self._status[message['user']]['status'] = "awaiting leave %d" % i
                         else:
                             self._status[message['user']]['status'] = "awaiting generate"
-                            self._client.rtm_send_message(message['channel'],"OK! Are you ready to create this rota?")
+                            self._slack.chat.post_message(message['channel'],"OK! Are you ready to create this rota?", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                     logging.info(self.rota_names)
                     logging.info(self.rota_days_off)
                 elif p['status'] == 'awaiting generate':
@@ -151,9 +151,9 @@ class Bot(object):
                             persons.append(Person(self.rota_names[i], self.rota_patterns[i], self.rota_days_off[i]))
                         r = Rota(self.start_date, self.end_date, persons, self.type)
                         r.go()
-                        self._client.rtm_send_message(message['channel'],r.md_rota(True))
+                        self._slack.chat.post_message(message['channel'],r.md_rota(True))
                 else:
-                    self._client.rtm_send_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.")
+                    self._slack.chat.post_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
 
 if __name__ == "__main__":
     log_level = os.getenv("LOG_LEVEL", "INFO")
