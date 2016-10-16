@@ -81,7 +81,7 @@ class Bot(object):
                     self._status[message['user']]['status'] = 'awaiting names confirmation'
                 elif p['status'] == 'awaiting names confirmation':
                     if message['text'].lower() == "yes":
-                        self._client.rtm_send_message(message['channel'],"Great!")
+                        self._client.rtm_send_message(message['channel'],"Great!", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self.rota_patterns = [[1,2,3,4,5]] * len(self.rota_names)
                         self.rota_days_off = [[1,1,1,1,1]] * len(self.rota_names)
                         logging.debug(self.rota_patterns)
@@ -110,7 +110,7 @@ class Bot(object):
                                 self._slack.chat.post_message(message['channel'],"Thanks.  Now for %s." % (self.rota_names[i]), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                             else:
                                 self._status[message['user']]['status'] = "awaiting leave 0"
-                                self._slack.chat.post_message(message['channel'],"Now let's sort out days off.  Can you list the days %s is off? Please list all the days in the format `YYYY/MM/DD`, separated by commas." % self.rota_names[0], username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                                self._slack.chat.post_message(message['channel'],"Now let's sort out days off.  Can you list the days %s is off? Please list all the days in the format `YYYY/MM/DD`, separated by commas. If %s is not taking any days off, type `-`." % (self.rota_names[0],self.rota_names[0]) username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         else:
                             self._slack.chat.post_message(message['channel'],"That wasn't quite right.  Can you try again?", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
 
