@@ -23,6 +23,7 @@ class Rota:
     _haystack = []
     _rota = []
     _min_days = 3
+    _type = "ooh"
 
     _attempts = 1000
 
@@ -32,6 +33,7 @@ class Rota:
         self._persons = persons
         if type == "gentrim" or type == "general trim" :
             self._days = [1,2,4,5]
+            self._type = "gentrim"
         logging.debug("Rota for %d days." % self._get_days())
 
     
@@ -208,13 +210,18 @@ class Rota:
         days = self._end - self._start
         csv_output  = io.StringIO()
         fieldnames=['Subject','Start Date','All Day Event']
+        if self._type == "gentrim":
+            fieldnames = ['Subject','Start Date','Start Time', 'End Time']
         writer = csv.DictWriter(csv_output, fieldnames=fieldnames)
         writer.writeheader()
 
         for i in range(0, days.days + 1):
             day = self._start + td(days=i)
             if self._rota[i] != "---------" and self._rota[i] != "BANK HOLIDAY":
-                writer.writerow({'Subject':self._rota[i], 'Start Date':day.strftime("%Y/%m/%d"),'All Day Event':'True'})
+                if self._type == "gentrim":
+                    writer.writerow({'Subject':self._rota[i], 'Start Date':day.strftime("%Y/%m/%d"),'Start Time':'1:00 PM','End Time':'2:00 PM'})
+                else:    
+                    writer.writerow({'Subject':self._rota[i], 'Start Date':day.strftime("%Y/%m/%d"),'All Day Event':'True'})
 
         return csv_output.getvalue()
 
