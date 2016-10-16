@@ -55,7 +55,7 @@ class Bot(object):
                 if p['status'] == 'awaiting rota type':
                     if message['text'].lower() == "ooh" or message['text'].lower() == "general trim":
                         self.type = message['text'].lower()
-                        self._client.rtm_send_message(message['channel'],"Thanks! What day will the rota start on? Please enter it as YYYY/MM/DD.")
+                        self._slack.slack.chat.post_message(message['channel'],"Thanks! What day will the rota start on? Please enter it as `YYYY/MM/DD`.", username=self.username, as_user=False, icon_emoji=self.icon_emoji))
                         self._status[message['user']]['status'] = 'awaiting start date'
                     else:
                         self._client.rtm_send_message(message['channel'],"Sorry, that's  not a valid date.  Please try again.")
