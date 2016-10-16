@@ -31,7 +31,7 @@ class Bot(object):
     def start(self):
         logging.debug("Starting!")
         if self._client.rtm_connect():
-            self._slack.users.setActive()
+            self._slack.users.set_active()
             while self.keep_running:
                 messages = self._client.rtm_read()
                 logging.info(messages)
