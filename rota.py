@@ -131,12 +131,12 @@ class Rota:
                 j = 0
                 for i in range(0, days.days + 1):
                     day = self._start + td(days=i)
-                    if day.isoweekday() == 4:
+                    if day.isoweekday() == 5:
                         fridays.append(rota[i])
 
                 work_fridays = []
                 for person in self._persons:
-                    if 4 in person._days_worked:
+                    if 5 in person._days_worked:
                         work_fridays.append(person._name)
 
                 fridays_people = {}
@@ -154,7 +154,7 @@ class Rota:
 
                 min_fridays = 1000
                 for person in self._persons:
-                    if 4 in person._days_worked:
+                    if 5 in person._days_worked:
                         min_fridays = fridays.count(person._name) if fridays.count(person._name) < min_fridays else min_fridays
                 logging.debug("The least Fridays worked is %d." % min_fridays)
 
@@ -177,9 +177,8 @@ class Rota:
         print ("|:--------:|:----------|:--------------|")
         for i in range(0, days.days + 1):
             day = self._start + td(days=i)
-            isoweekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
             print("| %s | %s | %s |" % (day.strftime("%d/%m/%y"), day.strftime("%A").ljust(9), self._rota[i].ljust(13)))
-            if day.isoweekday() == 4:
+            if day.isoweekday() == 5:
                 fridays.append(self._rota[i])
         print()
         print()
@@ -192,9 +191,8 @@ class Rota:
         md += "|:--------:|:----------|:--------------|\n"
         for i in range(0, days.days + 1):
             day = self._start + td(days=i)
-            isoweekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
             md += "| %s | %s | %s |\n" % (day.strftime("%d/%m/%y"), day.strftime("%A").ljust(9), self._rota[i].ljust(13))
-            if day.isoweekday() == 4:
+            if day.isoweekday() == 5:
                 fridays.append(self._rota[i])
                 
         if show_fridays:

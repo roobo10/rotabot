@@ -184,7 +184,8 @@ class Bot(object):
                         self._slack.chat.post_message(message['channel'],"Thanks!", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         self._status[message['user']]['status'] = "rota done"
                 else:
-                    self._slack.chat.post_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
+                    if  len(message['text']) > 0:
+                        self._slack.chat.post_message(message['channel'],"Sorry, I don't understand what you're saying! Type 'create rota' to restart.", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
 
 if __name__ == "__main__":
     log_level = os.getenv("LOG_LEVEL", "INFO")
