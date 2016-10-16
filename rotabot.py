@@ -153,6 +153,11 @@ class Bot(object):
                         r = Rota(self.start_date, self.end_date, persons, self.type)
                         r.go()
                         rota_md = r.md_rota(True)
+                        rota_md_lines = rota_md.split("\n") 
+                        n = 7
+                        rota_md_group = [rota_md_lines[m:m+n] for m in range(0, len(rota_md_lines), n)]
+                        for line_md in rota_md_group:
+                            self._slack.chat.post_message(message['channel'],"```%s```" % ("\n".join(line_md)), username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                         r_title = "Rota for %s to %s" % (self.start_date.strftime("%d/%m/%Y"),self.end_date.strftime("%d/%m/%Y"))
                         self._slack.chat.post_message(message['channel'],"Here's the rota!\n```" + rota_md + "```", username=self.username, as_user=False, icon_emoji=self.icon_emoji)
                 else:
