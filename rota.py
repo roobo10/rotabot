@@ -40,7 +40,7 @@ class Rota:
         if type == "gentrim" or type == "general trim" :
             self._days = [1,2,4,5]
             self._type = "gentrim"
-            self._min_days = 10
+            self._min_days = 14
         logging.debug("Rota for %d days." % self._get_days())
 
     
