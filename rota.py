@@ -126,14 +126,14 @@ class Rota:
         haystack = self._build_haystack()
         success = False
         attempt = 0
-        if self._type == "ooh":
-            while not success and attempt <= self._attempts:
-                logging.debug("ATTEMPT %s" % attempt)
-                copy_haystack = [h for h in haystack]
+        while not success and attempt <= self._attempts:
+            logging.debug("ATTEMPT %s" % attempt)
+            copy_haystack = [h for h in haystack]
 
-                rota = self._do_rota(copy_haystack)
-
-                if rota is not None and self._type != "ooh":
+            rota = self._do_rota(copy_haystack)
+            
+            if self._type == "ooh":
+                if rota is not None:
                     days = self._end - self._start
                     fridays =  []
                     j = 0
@@ -169,7 +169,7 @@ class Rota:
                     if max_fridays <= min_fridays + 1:
                         success = True
                 attempt += 1
-        logging.debug(rota)
+            logging.debug(rota)
         if success:
             self._rota = rota
             logging.info("SUCCEEDED ON ATTEMPT: %d" % attempt)
