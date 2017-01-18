@@ -18,7 +18,13 @@ class Rota:
                         datetime.strptime("2017/04/14","%Y/%m/%d"),
                         datetime.strptime("2017/04/17","%Y/%m/%d"),
                         datetime.strptime("2017/05/01","%Y/%m/%d"),
-                        datetime.strptime("2017/05/29","%Y/%m/%d")]
+                        datetime.strptime("2017/05/29","%Y/%m/%d"),
+                        datetime.strptime("2017/07/17","%Y/%m/%d"),
+                        datetime.strptime("2017/09/25","%Y/%m/%d"),
+                        datetime.strptime("2017/12/25","%Y/%m/%d"),
+                        datetime.strptime("2017/12/26","%Y/%m/%d"),
+                        datetime.strptime("2018/01/01","%Y/%m/%d"),
+                        datetime.strptime("2017/01/02","%Y/%m/%d")]
     _persons = []
     _haystack = []
     _rota = []
