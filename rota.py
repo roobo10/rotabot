@@ -132,7 +132,9 @@ class Rota:
 
             rota = self._do_rota(copy_haystack)
             
-            if self._type == "ooh":
+            if self._type != "ooh":
+                success = True
+            else:
                 if rota is not None:
                     days = self._end - self._start
                     fridays =  []
