@@ -126,48 +126,49 @@ class Rota:
         haystack = self._build_haystack()
         success = False
         attempt = 0
-        while not success and attempt <= self._attempts:
-            logging.debug("ATTEMPT %s" % attempt)
-            copy_haystack = [h for h in haystack]
+        if self._type == "ooh":
+            while not success and attempt <= self._attempts:
+                logging.debug("ATTEMPT %s" % attempt)
+                copy_haystack = [h for h in haystack]
 
-            rota = self._do_rota(copy_haystack)
+                rota = self._do_rota(copy_haystack)
 
-            if rota is not None and self._type != "ooh":
-                days = self._end - self._start
-                fridays =  []
-                j = 0
-                for i in range(0, days.days + 1):
-                    day = self._start + td(days=i)
-                    if day.isoweekday() == 5:
-                        fridays.append(rota[i])
+                if rota is not None and self._type != "ooh":
+                    days = self._end - self._start
+                    fridays =  []
+                    j = 0
+                    for i in range(0, days.days + 1):
+                        day = self._start + td(days=i)
+                        if day.isoweekday() == 5:
+                            fridays.append(rota[i])
 
-                work_fridays = []
-                for person in self._persons:
-                    if 5 in person._days_worked:
-                        work_fridays.append(person._name)
+                    work_fridays = []
+                    for person in self._persons:
+                        if 5 in person._days_worked:
+                            work_fridays.append(person._name)
 
-                fridays_people = {}
-                for person in fridays:
-                    if person not in fridays_people and person != "BANK HOLIDAY" and person != "---------":
-                        fridays_people[person] =  fridays.count(person)
+                    fridays_people = {}
+                    for person in fridays:
+                        if person not in fridays_people and person != "BANK HOLIDAY" and person != "---------":
+                            fridays_people[person] =  fridays.count(person)
 
-                max_fridays = 0
-                logging.debug("Fridays:")
-                logging.debug(fridays)
-                for person,worked in fridays_people.items():
-                    max_fridays = worked if worked > max_fridays else max_fridays
+                    max_fridays = 0
+                    logging.debug("Fridays:")
+                    logging.debug(fridays)
+                    for person,worked in fridays_people.items():
+                        max_fridays = worked if worked > max_fridays else max_fridays
 
-                logging.debug("The most Fridays worked is %d." % max_fridays)
+                    logging.debug("The most Fridays worked is %d." % max_fridays)
 
-                min_fridays = 1000
-                for person in self._persons:
-                    if 5 in person._days_worked:
-                        min_fridays = fridays.count(person._name) if fridays.count(person._name) < min_fridays else min_fridays
-                logging.debug("The least Fridays worked is %d." % min_fridays)
+                    min_fridays = 1000
+                    for person in self._persons:
+                        if 5 in person._days_worked:
+                            min_fridays = fridays.count(person._name) if fridays.count(person._name) < min_fridays else min_fridays
+                    logging.debug("The least Fridays worked is %d." % min_fridays)
 
-                if max_fridays <= min_fridays + 1:
-                    success = True
-            attempt += 1
+                    if max_fridays <= min_fridays + 1:
+                        success = True
+                attempt += 1
         logging.debug(rota)
         if success:
             self._rota = rota
