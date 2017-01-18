@@ -40,7 +40,7 @@ class Rota:
         if type == "gentrim" or type == "general trim" :
             self._days = [1,2,4,5]
             self._type = "gentrim"
-            self._min_days = 14
+            self._min_days = 10
         logging.debug("Rota for %d days." % self._get_days())
 
     
@@ -132,7 +132,7 @@ class Rota:
 
             rota = self._do_rota(copy_haystack)
 
-            if rota is not None:
+            if rota is not None and self._type != "ooh":
                 days = self._end - self._start
                 fridays =  []
                 j = 0
